@@ -54,3 +54,4 @@ https://www.linkedin.com/in/taissocout
 
 GitHub:  
 https://github.com/taissocout
+# python-projects-portfolio
