@@ -1,17 +1,15 @@
 # ==========================================================
-# API COM FASTAPI - POSTS
+# FASTAPI - EXEMPLO SIMPLES COM JSON, COOKIE E HEADER
 # ==========================================================
 #
-# Neste exemplo vamos usar:
+# O que este código mostra:
 #
-# - FastAPI
-# - BaseModel do Pydantic
-# - status code
-# - query parameters
-# - path parameters
-# - cookie
-# - header
-# - response
+# 1) Como criar uma API com FastAPI
+# 2) Como receber dados com POST
+# 3) Como listar dados com GET
+# 4) Como retornar dados em formato JSON
+# 5) Como ler Cookie e Header
+# 6) Como testar tudo no Insomnia
 #
 # ==========================================================
 
@@ -19,29 +17,23 @@
 # ----------------------------------------------------------
 # IMPORTAÇÕES
 # ----------------------------------------------------------
-# datetime e UTC para salvar datas em UTC
 from datetime import UTC, datetime
-
-# Annotated ajuda a deixar os parâmetros mais explícitos
 from typing import Annotated
 
-# Importações do FastAPI
 from fastapi import Cookie, FastAPI, Header, Response, status
-
-# BaseModel para validar o corpo da requisição
 from pydantic import BaseModel
 
 
 # ----------------------------------------------------------
-# INSTÂNCIA DA APLICAÇÃO
+# CRIANDO A APLICAÇÃO FASTAPI
 # ----------------------------------------------------------
 app = FastAPI()
 
 
 # ----------------------------------------------------------
-# BANCO DE DADOS FAKE
+# BANCO DE DADOS FALSO
 # ----------------------------------------------------------
-# Aqui usamos uma lista para simular um banco de dados.
+# Isso é só uma lista de dicionários para simular um banco.
 fake_db = [
     {"title": "Criando uma aplicação com Django", "date": datetime.now(UTC), "published": True},
     {"title": "Criando uma aplicação com FastAPI", "date": datetime.now(UTC), "published": True},
@@ -51,9 +43,9 @@ fake_db = [
 
 
 # ----------------------------------------------------------
-# MODEL DO POST
+# MODELO DO POST
 # ----------------------------------------------------------
-# BaseModel valida os dados recebidos no body da requisição.
+# BaseModel valida os dados que chegam no body da requisição.
 class Post(BaseModel):
     title: str
     date: datetime = datetime.now(UTC)
@@ -61,14 +53,25 @@ class Post(BaseModel):
 
 
 # ----------------------------------------------------------
-# ROTA PARA CRIAR UM POST
+# ROTA POST - CRIAR POST
 # ----------------------------------------------------------
-# status_code=201 indica que um recurso foi criado com sucesso.
+# Aqui o usuário envia um JSON no body da requisição.
+#
+# Exemplo no Insomnia:
+# {
+#   "title": "Aprendendo FastAPI",
+#   "date": "2026-03-08T12:00:00Z",
+#   "published": true
+# }
+#
+# O FastAPI transforma esse JSON em um objeto Post.
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
-    # model_dump() é o modo mais atual para transformar em dicionário
+    # Converte o modelo para dicionário e salva na fake_db
     fake_db.append(post.model_dump())
 
+    # Aqui retornamos um dicionário Python.
+    # O FastAPI converte isso automaticamente para JSON.
     return {
         "message": "Post criado com sucesso!",
         "post": post
@@ -76,59 +79,76 @@ def create_post(post: Post):
 
 
 # ----------------------------------------------------------
-# ROTA PARA LISTAR POSTS
+# ROTA GET - LISTAR POSTS
 # ----------------------------------------------------------
-# Aqui vamos usar:
+# Aqui usamos:
 #
-# - response: para manipular cookies na resposta
-# - published: filtrar posts publicados
-# - limit: limitar quantidade
-# - skip: pular registros
-# - ads_id: pegar valor de cookie
-# - user_agent: pegar valor do header
+# - response: para enviar cookie na resposta
+# - published: filtra posts publicados ou não
+# - limit: limita quantidade de posts
+# - skip: pula alguns posts
+# - ads_id: lê cookie da requisição
+# - user_agent: lê o header User-Agent
 #
 # IMPORTANTE:
-# user_agent precisa ser escrito assim no parâmetro,
-# mas o FastAPI entende automaticamente o header "User-Agent".
+# FastAPI entende automaticamente que user_agent
+# corresponde ao header "User-Agent".
 @app.get("/posts")
 def read_posts(
     response: Response,
-    published: bool,
-    limit: int,
+    published: bool = True,
+    limit: int = 10,
     skip: int = 0,
     ads_id: Annotated[str | None, Cookie()] = None,
     user_agent: Annotated[str | None, Header()] = None,
 ):
-    # definindo um cookie na resposta
+    # Envia um cookie para o cliente
     response.set_cookie(key="ads_id", value="123")
 
-    # prints para aparecer no terminal do servidor
+    # Prints para aparecer no terminal do servidor
     print(f"Cookie ads_id: {ads_id}")
     print(f"User-Agent: {user_agent}")
 
-    # retornando apenas os posts filtrados
-    return [
+    # Filtrando os posts
+    posts_filtrados = [
         post
         for post in fake_db[skip : skip + limit]
-        if post["published"] is published
+        if post["published"] == published
     ]
 
+    # Retornando um dicionário Python.
+    # Isso vira JSON automaticamente no FastAPI.
+    return {
+        "total": len(posts_filtrados),
+        "skip": skip,
+        "limit": limit,
+        "published": published,
+        "items": posts_filtrados
+    }
+
 
 # ----------------------------------------------------------
-# ROTA COM PATH PARAMETER
+# ROTA GET - POSTS POR FRAMEWORK
 # ----------------------------------------------------------
-# Aqui o framework é recebido diretamente pela URL.
+# framework é um path parameter, ou seja,
+# vem direto da URL.
+#
+# Exemplo:
+# /posts/FastAPI
 @app.get("/posts/{framework}")
 def read_framework_posts(framework: str):
     return {
+        "framework": framework,
         "posts": [
             {
                 "title": f"Criando uma aplicação com {framework}",
                 "date": datetime.now(UTC),
+                "published": True,
             },
             {
                 "title": f"Boas práticas com {framework}",
                 "date": datetime.now(UTC),
+                "published": True,
             },
         ]
     }
