@@ -75,3 +75,37 @@ def inserir_posts_lote(conn: sqlite3.Connection, posts: list[dict]) -> int:
     conn.commit()
     print(f"[BATCH] {cursor.rowcount} post(s) inseridos em lote")
     return cursor.rowcount
+
+
+def buscar_posts_publicados(conn: sqlite3.Connection) -> list:
+    """JOIN com usuarios para retornar nome do autor junto com o post."""
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT p.id, p.titulo, p.conteudo, p.criado_em, u.nome AS autor
+        FROM posts p
+        INNER JOIN usuarios u ON p.usuario_id = u.id
+        WHERE p.publicado = 1
+        ORDER BY p.criado_em DESC
+    """)
+    return cursor.fetchall()
+
+
+def buscar_posts_do_usuario(conn: sqlite3.Connection, usuario_id: int) -> list:
+    """Filtragem por usuario_id com WHERE."""
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT * FROM posts WHERE usuario_id = ? ORDER BY criado_em DESC",
+        (usuario_id,)
+    )
+    return cursor.fetchall()
+
+
+def buscar_post_por_id(conn: sqlite3.Connection, post_id: int):
+    cursor = conn.cursor()
+    cursor.execute(
+        """SELECT p.*, u.nome AS autor
+           FROM posts p JOIN usuarios u ON p.usuario_id = u.id
+           WHERE p.id = ?""",
+        (post_id,)
+    )
+    return cursor.fetchone()
