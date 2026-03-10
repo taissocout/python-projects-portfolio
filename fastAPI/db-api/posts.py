@@ -55,3 +55,23 @@ def remover_posts_do_usuario(conn: sqlite3.Connection, usuario_id: int) -> int:
     conn.commit()
     print(f"[DELETE] {cursor.rowcount} post(s) do usuario {usuario_id} removidos")
     return cursor.rowcount
+
+
+def inserir_posts_lote(conn: sqlite3.Connection, posts: list[dict]) -> int:
+    """
+    Batch insert de posts. Mais eficiente que insercoes individuais.
+    posts = [{"titulo": ..., "conteudo": ..., "usuario_id": ..., "publicado": bool}]
+    """
+    dados = [
+        (p["titulo"].strip(), p.get("conteudo", "").strip(),
+         int(p.get("publicado", False)), p["usuario_id"])
+        for p in posts
+    ]
+    cursor = conn.cursor()
+    cursor.executemany(
+        "INSERT INTO posts (titulo, conteudo, publicado, usuario_id) VALUES (?, ?, ?, ?)",
+        dados
+    )
+    conn.commit()
+    print(f"[BATCH] {cursor.rowcount} post(s) inseridos em lote")
+    return cursor.rowcount
