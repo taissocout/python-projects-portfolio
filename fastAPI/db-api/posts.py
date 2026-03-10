@@ -119,3 +119,17 @@ def contar_posts(conn: sqlite3.Connection, publicado: bool | None = None) -> int
     else:
         cursor.execute("SELECT COUNT(*) FROM posts WHERE publicado = ?", (int(publicado),))
     return cursor.fetchone()[0]
+
+
+def buscar_posts_como_dict(conn: sqlite3.Connection) -> list[dict]:
+    """
+    Retorna posts como lista de dicionarios (requer row_factory=sqlite3.Row).
+    Facilita serializacao para JSON em APIs.
+    """
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT p.id, p.titulo, p.publicado, p.criado_em, u.nome AS autor
+        FROM posts p JOIN usuarios u ON p.usuario_id = u.id
+        ORDER BY p.criado_em DESC
+    """)
+    return [dict(row) for row in cursor.fetchall()]
