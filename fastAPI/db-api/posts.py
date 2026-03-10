@@ -38,3 +38,20 @@ def publicar_post(conn: sqlite3.Connection, post_id: int) -> bool:
     )
     conn.commit()
     return cursor.rowcount > 0
+
+
+def remover_post(conn: sqlite3.Connection, post_id: int) -> bool:
+    """Remove um post pelo ID."""
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM posts WHERE id = ?", (post_id,))
+    conn.commit()
+    return cursor.rowcount > 0
+
+
+def remover_posts_do_usuario(conn: sqlite3.Connection, usuario_id: int) -> int:
+    """Remove todos os posts de um usuario. Retorna quantidade removida."""
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM posts WHERE usuario_id = ?", (usuario_id,))
+    conn.commit()
+    print(f"[DELETE] {cursor.rowcount} post(s) do usuario {usuario_id} removidos")
+    return cursor.rowcount
