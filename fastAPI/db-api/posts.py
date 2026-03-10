@@ -109,3 +109,13 @@ def buscar_post_por_id(conn: sqlite3.Connection, post_id: int):
         (post_id,)
     )
     return cursor.fetchone()
+
+
+def contar_posts(conn: sqlite3.Connection, publicado: bool | None = None) -> int:
+    """SELECT COUNT — funcoes de agregacao."""
+    cursor = conn.cursor()
+    if publicado is None:
+        cursor.execute("SELECT COUNT(*) FROM posts")
+    else:
+        cursor.execute("SELECT COUNT(*) FROM posts WHERE publicado = ?", (int(publicado),))
+    return cursor.fetchone()[0]
