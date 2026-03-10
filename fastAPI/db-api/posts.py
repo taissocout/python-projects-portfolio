@@ -27,3 +27,14 @@ def atualizar_post(conn: sqlite3.Connection, post_id: int, titulo: str,
     )
     conn.commit()
     return cursor.rowcount > 0
+
+
+def publicar_post(conn: sqlite3.Connection, post_id: int) -> bool:
+    """Marca um post como publicado (UPDATE parcial — apenas um campo)."""
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE posts SET publicado = 1 WHERE id = ?",
+        (post_id,)
+    )
+    conn.commit()
+    return cursor.rowcount > 0
