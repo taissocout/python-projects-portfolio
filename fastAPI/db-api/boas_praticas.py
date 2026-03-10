@@ -62,3 +62,25 @@ def inserir_com_tratamento(conn: sqlite3.Connection, nome: str, email: str) -> i
         print(f"[ERRO DB] {type(e).__name__}: {e}")
         conn.rollback()
         return None
+
+
+# ── 4. FECHAMENTO SEGURO ──────────────────────────────────────────────────────
+
+def executar_query_segura(query: str, params: tuple = ()):
+    """
+    Padrao recomendado: try/finally garante fechamento mesmo com excecao.
+    """
+    conn = None
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        conn.commit()
+        return cursor.fetchall()
+    except sqlite3.Error as e:
+        if conn:
+            conn.rollback()
+        raise RuntimeError(f"Erro ao executar query: {e}") from e
+    finally:
+        if conn:
+            conn.close()
