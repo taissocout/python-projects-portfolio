@@ -14,7 +14,7 @@ fake_db = [
 
 @app.get("/posts")
 def read_posts(skip: int = 0, limit: int = len(fake_db), published: bool = True):
-    return [post for post in fake_db[skip : skip + limit] if post["published"] is published]
+    return [post for post in fake_db[skip : skip + limit] if post["published"] == published]
 
 @app.get("/posts/{framework}")
 def read_framework_posts(framework: str):
