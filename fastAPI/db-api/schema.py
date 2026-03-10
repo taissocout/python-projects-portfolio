@@ -49,3 +49,18 @@ def criar_schema(conn: sqlite3.Connection) -> None:
     """Inicializa todas as tabelas em ordem de dependencia."""
     criar_tabela_usuarios(conn)
     criar_tabela_posts(conn)
+
+
+def resetar_banco(conn: sqlite3.Connection) -> None:
+    """
+    DROP + CREATE — util para testes e reset do ambiente de desenvolvimento.
+    NUNCA usar em producao.
+    """
+    cursor = conn.cursor()
+    cursor.executescript("""
+        DROP TABLE IF EXISTS posts;
+        DROP TABLE IF EXISTS usuarios;
+    """)
+    conn.commit()
+    criar_schema(conn)
+    print("[DB] Banco resetado com sucesso.")
