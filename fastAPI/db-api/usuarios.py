@@ -47,3 +47,20 @@ def remover_usuario(conn: sqlite3.Connection, usuario_id: int) -> bool:
     removido = cursor.rowcount > 0
     print(f"[DELETE] Usuario {usuario_id} {'removido' if removido else 'nao encontrado'}")
     return removido
+
+
+def inserir_usuarios_lote(conn: sqlite3.Connection,
+                          usuarios: list[tuple[str, str]]) -> int:
+    """
+    executemany — muito mais eficiente que N chamadas a execute().
+    Uma unica transacao para todos os registros.
+    usuarios = [("Nome", "email@x.com"), ...]
+    """
+    cursor = conn.cursor()
+    cursor.executemany(
+        "INSERT OR IGNORE INTO usuarios (nome, email) VALUES (?, ?)",
+        [(n.strip(), e.strip().lower()) for n, e in usuarios]
+    )
+    conn.commit()
+    print(f"[BATCH] {cursor.rowcount} usuario(s) inseridos em lote")
+    return cursor.rowcount
