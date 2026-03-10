@@ -64,3 +64,23 @@ def inserir_usuarios_lote(conn: sqlite3.Connection,
     conn.commit()
     print(f"[BATCH] {cursor.rowcount} usuario(s) inseridos em lote")
     return cursor.rowcount
+
+
+def buscar_todos_usuarios(conn: sqlite3.Connection) -> list:
+    """SELECT * com ORDER BY."""
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios ORDER BY nome ASC")
+    return cursor.fetchall()
+
+
+def buscar_usuario_por_id(conn: sqlite3.Connection, uid: int):
+    """fetchone — retorna um registro ou None."""
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE id = ?", (uid,))
+    return cursor.fetchone()
+
+
+def buscar_usuario_por_email(conn: sqlite3.Connection, email: str):
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE email = ?", (email.lower(),))
+    return cursor.fetchone()
