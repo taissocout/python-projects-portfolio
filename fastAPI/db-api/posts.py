@@ -15,3 +15,15 @@ def inserir_post(conn: sqlite3.Connection, titulo: str, conteudo: str,
     conn.commit()
     print(f"[INSERT] Post '{titulo}' inserido com ID={cursor.lastrowid}")
     return cursor.lastrowid
+
+
+def atualizar_post(conn: sqlite3.Connection, post_id: int, titulo: str,
+                   conteudo: str, publicado: bool) -> bool:
+    """Atualiza um post pelo ID. Retorna True se encontrado."""
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE posts SET titulo = ?, conteudo = ?, publicado = ? WHERE id = ?",
+        (titulo.strip(), conteudo.strip(), int(publicado), post_id)
+    )
+    conn.commit()
+    return cursor.rowcount > 0
