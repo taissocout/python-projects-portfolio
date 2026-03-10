@@ -19,3 +19,11 @@ def get_connection() -> sqlite3.Connection:
     """
     conn = sqlite3.connect(DB_PATH)
     return conn
+
+
+def configure_connection(conn: sqlite3.Connection) -> sqlite3.Connection:
+    """Aplica configurações de segurança e performance na conexão."""
+    conn.execute("PRAGMA journal_mode=WAL")   # write-ahead log — melhor concorrencia
+    conn.execute("PRAGMA foreign_keys=ON")    # ativa integridade referencial
+    conn.execute("PRAGMA synchronous=NORMAL") # equilibrio seguranca x velocidade
+    return conn
