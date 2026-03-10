@@ -149,3 +149,9 @@ fastAPI/fastapi-auth/__pycache__/
 fastAPI/fastapi-auth/.pytest_cache/
 fastAPI/fastapi-auth/htmlcov/
 fastAPI/fastapi-auth/.coverage
+
+# dio-blog testes
+fastAPI/dio-blog/.coverage
+fastAPI/dio-blog/htmlcov/
+fastAPI/dio-blog/.pytest_cache/
+fastAPI/dio-blog/coverage.xml

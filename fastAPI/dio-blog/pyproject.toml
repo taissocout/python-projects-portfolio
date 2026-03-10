@@ -1,17 +1,40 @@
-[project]
+[tool.poetry]
 name = "dio-blog"
-version = "0.1.0"
-description = ""
-authors = [
-    {name = "Taisso Junior Coutinho",email = "taissocout@gmail.com"}
-]
-requires-python = ">=3.13"
-dependencies = [
-    "fastapi",
-    "uvicorn[standard] (>=0.41.0,<0.42.0)",
-]
+version = "0.2.0"
+description = "Blog API assíncrona com FastAPI — DIO Bootcamp"
+authors = ["taissocout"]
+readme = "README.md"
+python = "^3.11"
 
+[tool.poetry.dependencies]
+python      = "^3.11"
+fastapi     = "^0.111.0"
+uvicorn     = {extras = ["standard"], version = "^0.29.0"}
+sqlalchemy  = {extras = ["asyncio"], version = "^2.0.30"}
+aiosqlite   = "^0.20.0"
+pydantic    = "^2.7.1"
+pydantic-settings = "^2.2.1"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest          = "*"
+pytest-asyncio  = "*"
+httpx           = "*"
+pytest-mock     = "*"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths    = ["tests"]
+addopts      = "-v --tb=short --no-header"
+
+[tool.coverage.run]
+source  = ["src", "routers", "main.py"]
+omit    = ["tests/*", "*/migrations/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty   = true
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires      = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
