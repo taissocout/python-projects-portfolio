@@ -127,3 +127,7 @@ bandit-report.json
 safety-report.json
 trivy-report.json
 zap-report.html
+
+# db-api
+fastAPI/db-api/*.db
+fastAPI/db-api/.env
