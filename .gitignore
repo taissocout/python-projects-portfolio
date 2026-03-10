@@ -131,3 +131,13 @@ zap-report.html
 # db-api
 fastAPI/db-api/*.db
 fastAPI/db-api/.env
+
+# async-blog-api — variáveis de ambiente e artefatos sensíveis
+fastAPI/async-blog-api/.env
+fastAPI/async-blog-api/*.db
+fastAPI/async-blog-api/*.sqlite
+fastAPI/async-blog-api/__pycache__/
+fastAPI/async-blog-api/.pytest_cache/
+fastAPI/async-blog-api/htmlcov/
+fastAPI/async-blog-api/.coverage
+fastAPI/async-blog-api/alembic/versions/*.pyc
