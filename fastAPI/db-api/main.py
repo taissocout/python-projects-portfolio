@@ -1,12 +1,13 @@
-"""main.py — ponto de entrada e teste de conexao"""
+"""main.py — conexao + criacao de schema"""
 from database import get_connection, configure_connection
+from schema import criar_schema
 
 def main():
     conn = get_connection()
     conn = configure_connection(conn)
-    print(f"[OK] Conectado ao banco: {conn}")
+    criar_schema(conn)
+    print("[OK] Banco inicializado com sucesso.")
     conn.close()
-    print("[OK] Conexao encerrada com sucesso.")
 
 if __name__ == "__main__":
     main()
