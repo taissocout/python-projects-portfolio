@@ -141,3 +141,11 @@ fastAPI/async-blog-api/.pytest_cache/
 fastAPI/async-blog-api/htmlcov/
 fastAPI/async-blog-api/.coverage
 fastAPI/async-blog-api/alembic/versions/*.pyc
+
+# fastapi-auth — variáveis de ambiente e artefatos sensíveis
+fastAPI/fastapi-auth/.env
+fastAPI/fastapi-auth/*.db
+fastAPI/fastapi-auth/__pycache__/
+fastAPI/fastapi-auth/.pytest_cache/
+fastAPI/fastapi-auth/htmlcov/
+fastAPI/fastapi-auth/.coverage
