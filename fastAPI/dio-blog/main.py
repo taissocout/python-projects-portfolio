@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from datetime import datetime, timezone
 from pydantic import BaseModel
+from fastapi import status
 
 app = FastAPI()
 
@@ -18,7 +19,7 @@ class Post(BaseModel):
     date: datetime
     published: bool
 
-@app.post("/posts")
+@app.post("/posts", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post):
     fake_db.append(post.dict())
     return {"message": "Post criado com sucesso!"}
