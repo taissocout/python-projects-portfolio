@@ -34,3 +34,16 @@ def atualizar_usuario(conn: sqlite3.Connection, usuario_id: int,
     afetadas = cursor.rowcount
     print(f"[UPDATE] usuarios — {afetadas} linha(s) afetada(s)")
     return afetadas > 0
+
+
+def remover_usuario(conn: sqlite3.Connection, usuario_id: int) -> bool:
+    """
+    DELETE com WHERE. ON DELETE CASCADE no schema garante que os posts
+    do usuario tambem sao removidos automaticamente.
+    """
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM usuarios WHERE id = ?", (usuario_id,))
+    conn.commit()
+    removido = cursor.rowcount > 0
+    print(f"[DELETE] Usuario {usuario_id} {'removido' if removido else 'nao encontrado'}")
+    return removido
